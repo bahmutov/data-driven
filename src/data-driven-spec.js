@@ -1,8 +1,8 @@
-const snapshot = require('.')
-const {isDataDriven, dataDriven} = require('./data-driven')
+const { isDataDriven, dataDriven } = require('.')
 const la = require('lazy-ass')
+const R = require('ramda')
 
-/* global describe, it */
+/* eslint-env mocha */
 describe('data-driven testing', () => {
   function isPrime (num) {
     for (var i = 2; i < num; i++) {
@@ -10,8 +10,6 @@ describe('data-driven testing', () => {
     }
     return num > 1
   }
-
-  const add = (a, b) => a + b
 
   it('detects data inputs', () => {
     const args = [isPrime, 1]
@@ -23,31 +21,24 @@ describe('data-driven testing', () => {
 
   it('computes values', () => {
     const results = dataDriven(isPrime, [1, 2, 3])
-    snapshot(results)
-  })
+    const expected = {
+      name: 'isPrime',
+      behavior: [
+        {
+          given: 1,
+          expect: false
+        },
+        {
+          given: 2,
+          expect: true
+        },
+        {
+          given: 3,
+          expect: true
+        }
+      ]
+    }
 
-  it('finds single prime', () => {
-    snapshot(isPrime, 6)
-    snapshot(isPrime, 17)
-    snapshot(isPrime, 73)
-    snapshot(isPrime, 50)
-  })
-
-  it('finds multiple primes', () => {
-    snapshot(isPrime, 1, 2, 3, 4, 5, 6, 7, 8, 9)
-  })
-
-  it('checks behavior of binary function add', () => {
-    snapshot(add, [1, 2], [2, 2], [-5, 5], [10, 11])
-  })
-
-  // a couple of tests with same name
-  // because data driven should add function name
-  it('works', () => {
-    snapshot(isPrime, 10, 11)
-  })
-
-  it('works', () => {
-    snapshot(add, [1, 2])
+    la(R.equals(results, expected))
   })
 })
