@@ -68,7 +68,10 @@
     "generateNotes": "github-post-release",
     "verifyRelease": {
       "path": "dont-crack",
-      "test-against": []
+      "test-against": [
+        "https://github.com/bahmutov/snap-shot",
+        "https://github.com/bahmutov/snap-shot-it"
+      ]
     }
   },
   "devDependencies": {

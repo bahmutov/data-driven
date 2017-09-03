@@ -18,6 +18,56 @@ npm install --save @bahmutov/data-driven
 
 ## Use
 
+Data-driven snapshot testing takes as an input a pure function and a bunch of arguments.
+
+```js
+// is this data-driven test? for example
+snapshot(isPrime, 1, 2, 3, 4, 5)
+// or
+snapshot(add, [1, 2], [-5, 5], [4, 6])
+```
+
+This module detects the above cases, and also has a utility method to compute the expected
+result. From snap-shot frameworks, like [snap-shot][snap-shot] and [snap-shot-it][snap-shot-it]
+when getting a value check if user wants data-driven value, and if yes, compute it.
+
+```js
+const {isDataDriven, dataDriven} = require('@bahmutov/data-driven')
+function snapshot(what) {
+  if (isDataDriven(arguments)) {
+    what = dataDriven(what, Array.from(arguments).slice(1))
+  }
+}
+```
+
+A typical value transformation would be
+
+```js
+const results = dataDriven(isPrime, [1, 2, 3])
+/* results is
+{
+  name: 'isPrime',
+  behavior: [
+    {
+      given: 1,
+      expect: false
+    },
+    {
+      given: 2,
+      expect: true
+    },
+    {
+      given: 3,
+      expect: true
+    }
+  ]
+}
+*/
+```
+
+[snap-shot]: https://github.com/bahmutov/snap-shot
+[snap-shot-it]: https://github.com/bahmutov/snap-shot-it
+
 ### Small print
 
 Author: Gleb Bahmutov &lt;gleb.bahmutov@gmail.com&gt; &copy; 2017
